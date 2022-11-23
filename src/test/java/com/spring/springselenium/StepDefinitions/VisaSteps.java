@@ -4,6 +4,7 @@ import com.spring.springselenium.Configuraion.service.ScreenshotService;
 import com.spring.springselenium.Configuraion.annotation.LazyAutowired;
 import com.spring.springselenium.PageClass.Google.GooglePage;
 import com.spring.springselenium.PageClass.Visa.VisaRegistrationPage;
+import com.spring.springselenium.Utilities.ReportUtil;
 import com.spring.springselenium.Utilities.SeleniumUtils;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -47,6 +48,14 @@ public class VisaSteps {
 
     @LazyAutowired
     private GooglePage googlePage;
+    @LazyAutowired
+    private ReportUtil report;
+
+    @LazyAutowired
+    private ScenarioContext scenarioContext;
+
+    @LazyAutowired
+    protected ScreenshotService screenshotService;
 
    public VisaSteps (TestUserDetails testUserDetails)
     {
@@ -85,6 +94,7 @@ public class VisaSteps {
     @And("I submit the form")
     public void submit() {
         this.registrationPage.submit();
+        scenarioContext.getScenario().attach(this.screenshotService.getScreenshot(), "image/png", scenarioContext.getScenario().getName());
     }
 
     @Then("I should see get the confirmation number")
@@ -97,8 +107,8 @@ public class VisaSteps {
         System.out.println("The Username from GoogleTest Class is:" + testUserDetails.getUserDetails().getUsername());
         System.out.println("The Username from GoogleTest Class is:" + testUserDetails.getUserDetails().getPassword());
         Assert.assertTrue(this.googlePage.getCount() >= count);
-        utils.clickElementWithWait("//a[normalize-space()='Images']",30);
+        utils.clickWithWait(By.xpath("//a[normalize-space()='Images']"));
         Thread.sleep(3000);
         driver.findElement(By.xpath("//a[normalize-space()='Videos']")).click();
-         }
+        }
    }

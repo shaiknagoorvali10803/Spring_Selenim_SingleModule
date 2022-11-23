@@ -5,13 +5,7 @@ import com.spring.springselenium.Configuraion.service.ScreenshotService;
 import io.cucumber.java.*;
 import org.openqa.selenium.WebDriver;
 import org.springframework.context.ApplicationContext;
-import org.springframework.util.DefaultPropertiesPersister;
-
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Properties;
 
 public class CucumberHooks {
 
@@ -19,27 +13,22 @@ public class CucumberHooks {
     private ScreenshotService screenshotService;
     @LazyAutowired
     private ApplicationContext applicationContext;
+    @LazyAutowired
+    private ScenarioContext scenarioContext;
 
-    @BeforeAll
-    public static void before_or_after_all() throws IOException {
-        Properties properties = new Properties();
-        properties.put("browser","edge");
-        File file = new File("application.properties");
-        OutputStream outputStream = new FileOutputStream( file );
-        DefaultPropertiesPersister defaultPropertiesPersister = new DefaultPropertiesPersister();
-        defaultPropertiesPersister.store(properties, outputStream, "Comment");
+    @Before
+    public void settingScenario(final Scenario scenario) {
+        System.out.println("calling BeforeStep");
+        scenarioContext.setScenario(scenario);
     }
-
     @AfterStep
     public void afterStep(Scenario scenario) throws IOException, InterruptedException {
         if(scenario.isFailed()){
             scenario.attach(this.screenshotService.getScreenshot(), "image/png", scenario.getName());
-           }
+        }
     }
-
     @After
     public void afterScenario(){
         this.applicationContext.getBean(WebDriver.class).quit();
+        }
     }
-
-}

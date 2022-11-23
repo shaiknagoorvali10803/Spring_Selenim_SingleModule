@@ -30,14 +30,13 @@ public class ScreenshotService {
     @Value("${screenshot.path}")
     private Path path;
 
-    @Autowired
-    private Faker faker;
-
     public String takeScreenShot() throws IOException {
+        String dateName = new SimpleDateFormat("yyyyMMddhhmmssSSS").format(new Date());
         File sourceFile = this.ctx.getBean(TakesScreenshot.class).getScreenshotAs(OutputType.FILE);
-        FileCopyUtils.copy(sourceFile, this.path.resolve(faker.name().firstName() + ".png").toFile());
+        FileCopyUtils.copy(sourceFile, this.path.resolve(dateName + ".png").toFile());
         return sourceFile.toString();
     }
+
     public String browser_TakeScreenShot() throws IOException {
         String destination = null;
         String imgPath = null;
