@@ -41,7 +41,7 @@ public class SeleniumUtils {
     private int maxSyncTime = defaultMaxTime;
     private boolean isCustomWait = false;
 
-    public String takeScreenshot(WebDriver driver, String screenshotName) {
+    public String takeScreenshot(String screenshotName) {
         String destination = null;
         String imgPath = null;
         int maxRetryCount = 5;
@@ -50,8 +50,8 @@ public class SeleniumUtils {
             String dateName = new SimpleDateFormat(CommonConstants.YYYY_MM_DD_HH_MM_SS).format(new Date());
             File source = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
             try {
-                imgPath = "TestsScreenshots\\" + screenshotName + dateName + ".png";
-                destination = System.getProperty("user.dir") + "\\build\\extent-reports\\" + imgPath;
+                imgPath = "\\TestsScreenshots\\" + screenshotName + dateName + ".png";
+                destination = System.getProperty("user.dir") + imgPath;
                 File finalDestination = new File(destination);
                 FileUtils.copyFile(source, finalDestination);
                 LOGGER.info("Screenshot destination : " + destination);

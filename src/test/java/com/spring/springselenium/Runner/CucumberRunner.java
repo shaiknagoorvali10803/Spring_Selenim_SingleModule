@@ -8,7 +8,7 @@ import org.testng.annotations.Listeners;
 @CucumberOptions(
         features = "classpath:features",
         glue = "com.spring.springselenium.StepDefinitions",
-        tags =  "@google",
+        //tags =  "@google",
         plugin = {
                 "pretty",
                 "json:target/cucumber-reports/CucumberTestReport.json",

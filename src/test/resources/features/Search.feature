@@ -1,5 +1,6 @@
 @chrome
 Feature: Google search
+
   Background:
     When I am Google Page
     Then Search for the Word "Nagoor"
@@ -12,7 +13,7 @@ Feature: Google search
     Then I should see at least <count> results
 
     Examples:
-    | keyword     | count       |
-    | selenium    | 10          |
-    | java        | 8           |
-    | spring      | 1          |
+      | keyword  | count |
+      | selenium | 10    |
+      | java     | 8     |
+      | spring   | 1     |

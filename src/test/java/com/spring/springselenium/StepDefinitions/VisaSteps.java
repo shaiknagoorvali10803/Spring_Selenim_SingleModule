@@ -1,15 +1,20 @@
 package com.spring.springselenium.StepDefinitions;
 
+import com.aventstack.extentreports.MediaEntityBuilder;
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter;
+import com.spring.springselenium.Configuraion.annotation.TakeScreenshot;
 import com.spring.springselenium.Configuraion.service.ScreenshotService;
 import com.spring.springselenium.Configuraion.annotation.LazyAutowired;
 import com.spring.springselenium.PageClass.Google.GooglePage;
 import com.spring.springselenium.PageClass.Visa.VisaRegistrationPage;
-import com.spring.springselenium.Utilities.ReportUtil;
 import com.spring.springselenium.Utilities.SeleniumUtils;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -45,8 +50,7 @@ public class VisaSteps {
 
     @LazyAutowired
     private GooglePage googlePage;
-    @LazyAutowired
-    private ReportUtil report;
+
     @Autowired
     ScenarioContext scenarioContext;
 
@@ -91,7 +95,8 @@ public class VisaSteps {
     @And("I submit the form")
     public void submit() {
         this.registrationPage.submit();
-        scenarioContext.scenario.attach(this.screenshotService.getScreenshot(), "image/png", scenarioContext.scenario.getName());
+        System.out.println("hashcode "+scenarioContext.getScenario().hashCode());
+       scenarioContext.scenario.attach(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES), "image/png", scenarioContext.scenario.getName());
     }
 
     @Then("I should see get the confirmation number")

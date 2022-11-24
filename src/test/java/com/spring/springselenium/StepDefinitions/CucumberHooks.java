@@ -11,14 +11,12 @@ public class CucumberHooks {
     private ScreenshotService screenshotService;
     @LazyAutowired
     private ApplicationContext applicationContext;
-
     @LazyAutowired
     ScenarioContext scenarioContext;
     @BeforeStep
     public void settingScenario(Scenario scenario) {
-        System.out.println("calling BeforeStep");
         scenarioContext.setScenario(scenario);
-        System.out.println("scenario value assigned");
+        //scenario.attach(this.screenshotService.getScreenshot(), "image/png", scenario.getName());
     }
     @AfterStep
     public void afterStep(Scenario scenario) throws IOException, InterruptedException {
