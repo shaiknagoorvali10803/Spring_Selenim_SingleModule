@@ -24,18 +24,18 @@ import org.testng.Assert;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 public class VisaSteps {
+    private static Map<Integer,ScenarioContext> contextMap = new HashMap<>();
     @Autowired
     protected WebDriver driver;
 
     @Autowired
     protected WebDriverWait wait;
 
-    @PostConstruct
-    private void init(){
-        PageFactory.initElements(this.driver, this);
-    }
+
 
     @LazyAutowired
     private VisaRegistrationPage registrationPage;
@@ -61,7 +61,13 @@ public class VisaSteps {
     public VisaSteps (TestUserDetails testUserDetails)
     {
         this.testUserDetails=testUserDetails;
-       }
+    }
+
+    @PostConstruct
+    private void init(){
+        PageFactory.initElements(this.driver, this);
+        contextMap.put(driver.hashCode(),scenarioContext);
+    }
     @Given("I am on VISA registration form")
     public void launchSite() {
         this.driver.navigate().to("https://vins-udemy.s3.amazonaws.com/sb/visa/udemy-visa.html");
@@ -95,8 +101,9 @@ public class VisaSteps {
     @And("I submit the form")
     public void submit() {
         this.registrationPage.submit();
-        System.out.println("hashcode "+scenarioContext.getScenario().hashCode());
-       scenarioContext.scenario.attach(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES), "image/png", scenarioContext.scenario.getName());
+        System.out.println("hashcode scenario Context "+scenarioContext.getScenario().hashCode());
+        System.out.println("hashcode driver "+driver.hashCode());
+        contextMap.get(driver.hashCode()).scenario.attach(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES), "image/png", "screenshot");
     }
 
     @Then("I should see get the confirmation number")

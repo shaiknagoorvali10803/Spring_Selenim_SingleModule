@@ -1,13 +1,9 @@
 package com.spring.springselenium.StepDefinitions;
 
-import com.aventstack.extentreports.MediaEntityBuilder;
-import com.aventstack.extentreports.Status;
-import com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter;
 import com.spring.springselenium.Configuraion.annotation.LazyAutowired;
 import com.spring.springselenium.Configuraion.service.ScreenshotService;
 import com.spring.springselenium.PageClass.Google.GooglePage;
 import com.spring.springselenium.Utilities.SeleniumUtils;
-import io.cucumber.java.Scenario;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -22,8 +18,11 @@ import org.testng.Assert;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GoogleSteps {
+    private static Map<Integer,ScenarioContext> contextMap = new HashMap<>();
     @Autowired
     protected WebDriver driver;
     @Autowired
@@ -47,6 +46,7 @@ public class GoogleSteps {
     @PostConstruct
     private void init(){
         PageFactory.initElements(this.driver, this);
+        contextMap.put(driver.hashCode(),scenarioContext);
     }
 
    @Given("I am on the google site")
@@ -63,8 +63,10 @@ public class GoogleSteps {
     @Then("I should see search results page")
     public void clickSearch() throws IOException {
         Assert.assertTrue(this.googlePage.isAt());
-        System.out.println("hashcode "+scenarioContext.getScenario().hashCode());
-         scenarioContext.scenario.attach(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES), "image/png", scenarioContext.scenario.getName());
+        System.out.println("hashcode scenario Context "+scenarioContext.getScenario().hashCode());
+        System.out.println("hashcode driver "+driver.hashCode());
+        contextMap.get(driver.hashCode()).scenario.attach(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES), "image/png", "screenShot");
+        //scenarioContext.scenario.attach(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES), "image/png", scenarioContext.scenario.getName());
         //ExtentCucumberAdapter.getCurrentStep().log(Status.INFO, "screenshot", MediaEntityBuilder.createScreenCaptureFromPath(utils.takeScreenshot("screenshot")).build());
     }
     @Then("I should see at least {int} results")
