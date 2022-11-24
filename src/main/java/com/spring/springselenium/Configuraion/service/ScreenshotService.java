@@ -55,4 +55,6 @@ public class ScreenshotService {
         return this.ctx.getBean(TakesScreenshot.class).getScreenshotAs(OutputType.BYTES);
     }
 
+
+
 }

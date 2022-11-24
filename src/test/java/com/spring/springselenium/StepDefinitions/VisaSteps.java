@@ -23,7 +23,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 public class VisaSteps {
-
     @Autowired
     protected WebDriver driver;
 
@@ -50,17 +49,17 @@ public class VisaSteps {
     private GooglePage googlePage;
     @LazyAutowired
     private ReportUtil report;
-
-    @LazyAutowired
-    private ScenarioContext scenarioContext;
+    @Autowired
+    ScenarioContext scenarioContext;
 
     @LazyAutowired
     protected ScreenshotService screenshotService;
 
-   public VisaSteps (TestUserDetails testUserDetails)
+    @Autowired
+    public VisaSteps (TestUserDetails testUserDetails)
     {
         this.testUserDetails=testUserDetails;
-    }
+       }
     @Given("I am on VISA registration form")
     public void launchSite() {
         this.driver.navigate().to("https://vins-udemy.s3.amazonaws.com/sb/visa/udemy-visa.html");
@@ -94,7 +93,7 @@ public class VisaSteps {
     @And("I submit the form")
     public void submit() {
         this.registrationPage.submit();
-        scenarioContext.getScenario().attach(this.screenshotService.getScreenshot(), "image/png", scenarioContext.getScenario().getName());
+        scenarioContext.scenario.attach(this.screenshotService.getScreenshot(), "image/png", scenarioContext.scenario.getName());
     }
 
     @Then("I should see get the confirmation number")
