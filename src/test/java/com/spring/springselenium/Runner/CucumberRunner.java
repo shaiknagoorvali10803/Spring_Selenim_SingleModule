@@ -2,12 +2,13 @@ package com.spring.springselenium.Runner;
 
 import io.cucumber.testng.AbstractTestNGCucumberTests;
 import io.cucumber.testng.CucumberOptions;
-import org.springframework.test.context.TestPropertySource;
 import org.testng.annotations.DataProvider;
+import org.testng.annotations.Listeners;
+
 @CucumberOptions(
         features = "classpath:features",
         glue = "com.spring.springselenium.StepDefinitions",
-        //tags =  "@google",
+        tags =  "@google",
         plugin = {
                 "pretty",
                 "json:target/cucumber-reports/CucumberTestReport.json",
@@ -17,7 +18,7 @@ import org.testng.annotations.DataProvider;
 )
 public class CucumberRunner extends AbstractTestNGCucumberTests {
     @Override
-    @DataProvider(parallel = false)
+    @DataProvider(parallel = true)
     public Object[][] scenarios() {
         return super.scenarios();
     }

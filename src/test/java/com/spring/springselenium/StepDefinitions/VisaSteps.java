@@ -10,7 +10,6 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -19,7 +18,6 @@ import org.springframework.util.StringUtils;
 import org.testng.Assert;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.time.LocalDate;
 
 public class VisaSteps {
@@ -101,13 +99,5 @@ public class VisaSteps {
         boolean isEmpty = StringUtils.isEmpty(this.registrationPage.getConfirmationNumber().trim());
         Assert.assertFalse(isEmpty);
     }
-    @Then("I should see at least {int} results")
-    public void verifyResults(int count) throws InterruptedException, IOException {
-        System.out.println("The Username from GoogleTest Class is:" + testUserDetails.getUserDetails().getUsername());
-        System.out.println("The Username from GoogleTest Class is:" + testUserDetails.getUserDetails().getPassword());
-        Assert.assertTrue(this.googlePage.getCount() >= count);
-        utils.clickWithWait(By.xpath("//a[normalize-space()='Images']"));
-        Thread.sleep(3000);
-        driver.findElement(By.xpath("//a[normalize-space()='Videos']")).click();
-        }
+
    }

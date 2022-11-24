@@ -7,7 +7,6 @@ import com.aventstack.extentreports.markuputils.ExtentColor;
 import com.aventstack.extentreports.markuputils.MarkupHelper;
 import com.spring.springselenium.Configuraion.annotation.LazyAutowired;
 import com.spring.springselenium.Configuraion.annotation.Page;
-import com.spring.springselenium.Configuraion.config.WebDriverConfig;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,18 +18,17 @@ import java.util.logging.Level;
 @Page
 public class ReportUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(ReportUtil.class);
-
     @Autowired
     protected WebDriver driver;
+    @Autowired
     private ExtentTest extentTest ;
     @LazyAutowired
-    private ExtentAppend extentAppend;
+    ExtentAppend extentAppend;
 
     public void reportSelenium(String status, String message) {
         boolean retryStatus = false;
         int retryCounter = 0;
         int maxRetryCount = 3;
-        //extentTest = getExtentTest();
         do {
             try {
                 if (status.equalsIgnoreCase("info")) {

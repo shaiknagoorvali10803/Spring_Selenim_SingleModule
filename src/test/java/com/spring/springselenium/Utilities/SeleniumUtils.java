@@ -1,15 +1,21 @@
 package com.spring.springselenium.Utilities;
 
 import com.spring.springselenium.Configuraion.annotation.Page;
+import org.apache.commons.io.FileUtils;
 import org.joda.time.Days;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.interactions.Keyboard;
 import org.openqa.selenium.support.ui.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.testng.Assert;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -20,7 +26,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import static com.spring.springselenium.Utilities.CommonConstants.BEFORE_WAIT_FOR_ELEMENT_IN_BUTTON_CLICK;
 import static com.spring.springselenium.Utilities.CommonConstants.MM_DD_YYYY_WITH_SLASH;
@@ -28,18 +33,40 @@ import static com.spring.springselenium.Utilities.CommonConstants.MM_DD_YYYY_WIT
 @Page
 public class SeleniumUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(SeleniumUtils.class);
-
     @Autowired
     protected WebDriver driver;
-
     @Autowired
     protected WebDriverWait wait;
-
     private int defaultMaxTime = 60;
     private int maxSyncTime = defaultMaxTime;
     private boolean isCustomWait = false;
 
-    public void clickElementWithWait(String locator, int time){
+    public String takeScreenshot(WebDriver driver, String screenshotName) {
+        String destination = null;
+        String imgPath = null;
+        int maxRetryCount = 5;
+        int retryCounter = 0;
+        while (driver instanceof TakesScreenshot) {
+            String dateName = new SimpleDateFormat(CommonConstants.YYYY_MM_DD_HH_MM_SS).format(new Date());
+            File source = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+            try {
+                imgPath = "TestsScreenshots\\" + screenshotName + dateName + ".png";
+                destination = System.getProperty("user.dir") + "\\build\\extent-reports\\" + imgPath;
+                File finalDestination = new File(destination);
+                FileUtils.copyFile(source, finalDestination);
+                LOGGER.info("Screenshot destination : " + destination);
+                return imgPath;
+            } catch (IOException e) {
+                LOGGER.error("takeScreenshot Exception : " + e.getMessage());
+                if (++retryCounter > maxRetryCount) {
+                    Assert.assertTrue(false, "Exception while taking screenshot : " + e.getMessage());
+                    break;
+                }
+            }
+        }
+        return destination;
+    }
+   public void clickElementWithWait(String locator, int time){
         WebElement element=driver.findElement(By.xpath(locator));
         wait.until(ExpectedConditions.visibilityOf(element));
         wait.until(ExpectedConditions.elementToBeClickable(element));
