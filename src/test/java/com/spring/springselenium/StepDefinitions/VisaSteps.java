@@ -1,11 +1,7 @@
 package com.spring.springselenium.StepDefinitions;
 
-import com.aventstack.extentreports.MediaEntityBuilder;
-import com.aventstack.extentreports.Status;
-import com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter;
-import com.spring.springselenium.Configuraion.annotation.TakeScreenshot;
-import com.spring.springselenium.Configuraion.service.ScreenshotService;
 import com.spring.springselenium.Configuraion.annotation.LazyAutowired;
+import com.spring.springselenium.Configuraion.service.ScreenshotService;
 import com.spring.springselenium.PageClass.Google.GooglePage;
 import com.spring.springselenium.PageClass.Visa.VisaRegistrationPage;
 import com.spring.springselenium.Utilities.SeleniumUtils;
@@ -13,6 +9,7 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import io.qameta.allure.Allure;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -23,6 +20,7 @@ import org.springframework.util.StringUtils;
 import org.testng.Assert;
 
 import javax.annotation.PostConstruct;
+import java.io.ByteArrayInputStream;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,8 +32,6 @@ public class VisaSteps {
 
     @Autowired
     protected WebDriverWait wait;
-
-
 
     @LazyAutowired
     private VisaRegistrationPage registrationPage;
@@ -71,7 +67,9 @@ public class VisaSteps {
     @Given("I am on VISA registration form")
     public void launchSite() {
         this.driver.navigate().to("https://vins-udemy.s3.amazonaws.com/sb/visa/udemy-visa.html");
-   }
+        contextMap.get(driver.hashCode()).scenario.attach(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES), "image/png", "screenshot");
+        //Allure.addAttachment("Screenshot", new ByteArrayInputStream(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES)));
+         }
 
     @When("I select my from country {string} and to country {string}")
     public void selectCountry(String from, String to) {
@@ -100,16 +98,19 @@ public class VisaSteps {
 
     @And("I submit the form")
     public void submit() {
+        contextMap.get(driver.hashCode()).scenario.attach(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES), "image/png", "screenshot");
+        //Allure.addAttachment("Screenshot", new ByteArrayInputStream(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES)));
         this.registrationPage.submit();
         System.out.println("hashcode scenario Context "+scenarioContext.getScenario().hashCode());
         System.out.println("hashcode driver "+driver.hashCode());
-        contextMap.get(driver.hashCode()).scenario.attach(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES), "image/png", "screenshot");
+       // contextMap.get(driver.hashCode()).scenario.attach(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES), "image/png", "screenshot");
     }
 
     @Then("I should see get the confirmation number")
-    public void verifyConfirmationNumber() {
+    public void verifyConfirmationNumber() throws InterruptedException {
         boolean isEmpty = StringUtils.isEmpty(this.registrationPage.getConfirmationNumber().trim());
         Assert.assertFalse(isEmpty);
+        Thread.sleep(2000);
     }
 
    }
